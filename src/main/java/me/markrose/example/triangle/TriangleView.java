@@ -19,6 +19,7 @@ import me.markrose.example.triangle.TriangleClassifier.Type;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 /**
  * Implements a Swing main view for the triangle classifier application.
@@ -63,11 +64,11 @@ public class TriangleView {
 		instructions.setText(
 				"This program will determine the type of triangle given the "
 				+ "lengths of the three sides of the triangle. Please enter the "
-				+ "the lengths of the sides and press Analyze to display the "
+				+ "the integer lengths of the sides and press Analyze to display the "
 				+ "type of triangle.");
 		instructions.setLineWrap(true);
 		instructions.setWrapStyleWord(true);
-		instructions.setRows(2);
+		instructions.setRows(4);
 		
 		JLabel side1Label = new JLabel("Side 1 length:");
 		side1 = new JTextField();
@@ -106,7 +107,7 @@ public class TriangleView {
 		
 		builder.append(instructions, 4);
 		builder.nextLine();
-		
+
 		builder.append(side1Label, side1);
 		builder.nextLine();
 		builder.append(side2Label, side2);
