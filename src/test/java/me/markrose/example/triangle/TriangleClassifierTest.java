@@ -17,7 +17,7 @@ public class TriangleClassifierTest {
 	 * 
 	 * @param side1Str the first side length, as a string
 	 * @param side2Str the second side length, as a string
-	 * @param side3Str the thirs side length, as a string
+	 * @param side3Str the third side length, as a string
 	 * @param expectedClassification the expected classification
 	 */
 	@Test(dataProvider="TriangleTests")
@@ -32,6 +32,13 @@ public class TriangleClassifierTest {
 		assertEquals(classifier.classify(side1Str, side2Str, side3Str), expectedClassification);
 	}
 	
+	/**
+	 * Gets the test cases to send to the classifier. Each test case
+	 * is an array of four values: the three side lengths, as strings,
+	 * and the expected classification, as a constant from {@link TriangleClassifier.Type}.
+	 * 
+	 * @return an array of test cases
+	 */
 	@DataProvider(name="TriangleTests")
 	private Object[][] getTriangleTests() {
 		return new Object[][] {
@@ -39,4 +46,5 @@ public class TriangleClassifierTest {
 				{ "3", "4", "5", Type.SCALENE },
 		};
 	}
+
 }

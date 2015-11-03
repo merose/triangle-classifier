@@ -27,14 +27,10 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class TriangleView {
 	
-	// Names of the interactive components. Default scope so they
-	// can be used for unit testing.
+	// Names of the interactive components that cannot be found by their
+	// text or their label. Default scope so they can be used for unit testing.
 	static final String DETAILS_NAME = "DETAILS_NAME";
 	static final String SUMMARY_NAME = "SUMMARY_NAME";
-	static final String CLASSIFY_BUTTON_NAME = "CLASSIFY_BUTTON_NAME";
-	static final String SIDE1_NAME = "side1";
-	static final String SIDE2_NAME = "side2";
-	static final String SIDE3_NAME = "side3";
 
 	private TriangleClassifier classifier;
 	
@@ -100,20 +96,11 @@ public class TriangleView {
 		instructions.setWrapStyleWord(true);
 		instructions.setRows(4);
 		
-		JLabel side1Label = new JLabel("Side 1 length:");
 		side1 = new JTextField();
-		side1.setName(SIDE1_NAME);
-		
-		JLabel side2Label = new JLabel("Side 2 length:");
 		side2 = new JTextField();
-		side2.setName(SIDE2_NAME);
-		
-		JLabel side3Label = new JLabel("Side 3 length:");
 		side3 = new JTextField();
-		side3.setName(SIDE3_NAME);
 		
 		JButton classifyButton = new JButton("Classify");
-		classifyButton.setName(CLASSIFY_BUTTON_NAME);
 		classifyButton.setFocusable(false);
 		classifyButton.addActionListener(new ActionListener() {
 			@Override
@@ -126,7 +113,6 @@ public class TriangleView {
 			}
 		});
 		
-		JLabel summaryLabel = new JLabel("Classification:");
 		summary = new JTextField("Not yet classified");
 		summary.setName(SUMMARY_NAME);
 		summary.setEditable(false);
@@ -149,20 +135,20 @@ public class TriangleView {
 		builder.append(instructions, 4);
 		builder.nextLine();
 
-		builder.append(side1Label, side1);
+		builder.append("Side 1 length:", side1);
 		builder.nextLine();
-		builder.append(side2Label, side2);
+		builder.append("Side 2 length:", side2);
 		builder.nextLine();
-		builder.append(side3Label, side3);
+		builder.append("Side 3 length:", side3);
 		builder.nextLine();
 		
 		builder.append(classifyButton);
 		builder.nextLine();
 		
-		builder.append(summaryLabel, summary);
+		builder.append("Classification:", summary);
 		builder.nextLine();
 		
-		builder.append(details, 4);
+		builder.append("", details, 2);
 		builder.nextLine();
 		
 		JPanel panel = builder.build();
