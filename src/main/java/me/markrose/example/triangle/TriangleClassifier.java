@@ -59,17 +59,13 @@ public class TriangleClassifier {
 	private Type classify(int side1, int side2, int side3) {
 		if (side1 > side2+side3) {
 			return Type.NOT_A_TRIANGLE;
-		}
-		
-		if (side1==side2 && side2==side3) {
+		} else if (side1==side2 && side2==side3) {
 			return Type.EQUILATERAL;
-		}
-		
-		if (side1==side2) {
+		} else if (side1==side2) {
 			return Type.ISOSCELES;
+		} else {
+			return Type.SCALENE;
 		}
-		
-		return Type.SCALENE;
 	}
 	
 }

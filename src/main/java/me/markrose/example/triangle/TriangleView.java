@@ -1,6 +1,7 @@
 package me.markrose.example.triangle;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ public class TriangleView {
 		side3 = new JTextField();
 		
 		JButton analyzeButton = new JButton("Analyze");
+		analyzeButton.setFocusable(false);
 		analyzeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -88,14 +90,16 @@ public class TriangleView {
 		JLabel summaryLabel = new JLabel("Classification:");
 		summary = new JTextField("Not yet classified");
 		summary.setBorder(Borders.EMPTY);
+		Font summaryFont = summary.getFont();
+		summary.setFont(summaryFont.deriveFont(Font.BOLD));
 
-		details = new JTextArea("Press the Analyze button to classify the triangle.");
+		details = new JTextArea("");
 		details.setLineWrap(true);
 		details.setWrapStyleWord(true);
 		
 		FormLayout layout = new FormLayout(
-				"right:max(25dlu;pref), 4dlu, 80dlu, 80dlu",
-				"pref"
+				"left:max(25dlu;pref), 4dlu, 80dlu, 80dlu",
+				""
 		);
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 		builder.border(Borders.DIALOG);
