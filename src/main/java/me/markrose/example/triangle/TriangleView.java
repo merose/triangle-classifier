@@ -10,21 +10,31 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import me.markrose.example.triangle.TriangleClassifier.Type;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 /**
  * Implements a Swing main view for the triangle classifier application.
  */
 public class TriangleView {
+	
+	// Names of the interactive components. Default scope so they
+	// can be used for unit testing.
+	static final String DETAILS_NAME = "DETAILS_NAME";
+	static final String SUMMARY_NAME = "SUMMARY_NAME";
+	static final String CLASSIFY_BUTTON_NAME = "CLASSIFY_BUTTON_NAME";
+	static final String SIDE1_NAME = "side1";
+	static final String SIDE2_NAME = "side2";
+	static final String SIDE3_NAME = "side3";
 
 	private TriangleClassifier classifier;
 	
@@ -35,6 +45,9 @@ public class TriangleView {
 	private JTextField summary;
 	private JTextArea details;
 	
+	/**
+	 * A map between the triangle type and a summary of the classification.
+	 */
 	private static final Map<Type, String> CLASSIFICATION_SUMMARY =
 			new HashMap<Type, String>();
 	static {
@@ -44,6 +57,9 @@ public class TriangleView {
 		CLASSIFICATION_SUMMARY.put(Type.NOT_A_TRIANGLE, "Not a triangle");
 	}
 	
+	/**
+	 * A map between the triangle type and a detail message about the classification.
+	 */
 	private static final Map<Type, String> CLASSIFICATION_DETAILS =
 			new HashMap<Type, String>();
 	static {
@@ -53,10 +69,24 @@ public class TriangleView {
 		CLASSIFICATION_DETAILS.put(Type.NOT_A_TRIANGLE, "Sides cannot form a triangle.");
 	}
 	
+	/**
+	 * Starts the application by creating a view and running it.
+	 * 
+	 * @param args the command line arguments, if any
+	 */
 	public static void main(String[] args) {
-		(new TriangleView()).run();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				(new TriangleView()).run();
+			}
+		});
 	}
 
+	/**
+	 * Runs the view by creating the main frame and adding the
+	 * widgets.
+	 */
 	private void run() {
 		classifier = new TriangleClassifier();
 		
@@ -64,7 +94,7 @@ public class TriangleView {
 		instructions.setText(
 				"This program will determine the type of triangle given the "
 				+ "lengths of the three sides of the triangle. Please enter the "
-				+ "the integer lengths of the sides and press Analyze to display the "
+				+ "the integer lengths of the sides and press Classify to display the "
 				+ "type of triangle.");
 		instructions.setLineWrap(true);
 		instructions.setWrapStyleWord(true);
@@ -72,29 +102,40 @@ public class TriangleView {
 		
 		JLabel side1Label = new JLabel("Side 1 length:");
 		side1 = new JTextField();
+		side1.setName(SIDE1_NAME);
 		
 		JLabel side2Label = new JLabel("Side 2 length:");
 		side2 = new JTextField();
+		side2.setName(SIDE2_NAME);
 		
 		JLabel side3Label = new JLabel("Side 3 length:");
 		side3 = new JTextField();
+		side3.setName(SIDE3_NAME);
 		
-		JButton analyzeButton = new JButton("Analyze");
-		analyzeButton.setFocusable(false);
-		analyzeButton.addActionListener(new ActionListener() {
+		JButton classifyButton = new JButton("Classify");
+		classifyButton.setName(CLASSIFY_BUTTON_NAME);
+		classifyButton.setFocusable(false);
+		classifyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				setClassification();
+				try {
+					setClassification(classifier.classify(side1.getText(), side2.getText(), side3.getText()));
+				} catch (Throwable ex) {
+					showException(ex);
+				}
 			}
 		});
 		
 		JLabel summaryLabel = new JLabel("Classification:");
 		summary = new JTextField("Not yet classified");
+		summary.setName(SUMMARY_NAME);
+		summary.setEditable(false);
 		summary.setBorder(Borders.EMPTY);
-		Font summaryFont = summary.getFont();
-		summary.setFont(summaryFont.deriveFont(Font.BOLD));
+		summary.setFont(summary.getFont().deriveFont(Font.BOLD));
 
 		details = new JTextArea("");
+		details.setName(DETAILS_NAME);
+		details.setEditable(false);
 		details.setLineWrap(true);
 		details.setWrapStyleWord(true);
 		
@@ -115,7 +156,7 @@ public class TriangleView {
 		builder.append(side3Label, side3);
 		builder.nextLine();
 		
-		builder.append(analyzeButton);
+		builder.append(classifyButton);
 		builder.nextLine();
 		
 		builder.append(summaryLabel, summary);
@@ -132,15 +173,36 @@ public class TriangleView {
 		frame.setBackground(Color.WHITE);
 		frame.setContentPane(panel);
 		
-		frame.setSize(500, 300);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Changes the classification messages shown in the view.
+	 * 
+	 * @param classification the triangle classification based on the three side lengths
+	 */
+	private void setClassification(Type classification) {
+		summary.setText(CLASSIFICATION_SUMMARY.get(classification));
+		details.setText(CLASSIFICATION_DETAILS.get(classification));
+	}
 
-	private void setClassification() {
-		Type result = classifier.classify(side1.getText(), side2.getText(), side3.getText());
-		summary.setText(CLASSIFICATION_SUMMARY.get(result));
-		details.setText(CLASSIFICATION_DETAILS.get(result));
+	/**
+	 * Displays an alert box showing an exception message, and
+	 * also displays to the standard error output.
+	 * 
+	 * @param ex the exception that occurred
+	 */
+	private void showException(Throwable ex) {
+		JOptionPane.showMessageDialog(
+				frame,
+				"An unexpected exception occurred.\n"
+				+ ex.getClass().getName() + "\n"
+				+ ex.getMessage(),
+				"Unexpected Exception",
+				JOptionPane.ERROR_MESSAGE
+		);
 	}
 
 }
